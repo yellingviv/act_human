@@ -40,14 +40,14 @@ def check_time(time_window):
     """check to determine which set of messages to draw from"""
 
     msg_list = []
-    window = time_window
-    if window == today_sched['am']['today']:
+    window = time_window[0:2]
+    if window in range(10, 12):
         msg_list = msgs.am_reminders
-    elif window == today_sched['am']['today']:
+    elif window in range(12, 13):
         msg_list = msgs.lunch_reminders
-    elif window == today_sched['am']['today']:
+    elif window in range(14, 18):
         msg_list = msgs.pm_reminders
-    elif window == today_sched['am']['today']:
+    elif window in range(17, 19):
         msg_list = msgs.eod_reminders
 
     return msg_list
