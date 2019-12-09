@@ -33,16 +33,16 @@ while True:
 def check_time(time_window):
     """check to determine which set of messages to draw from"""
 
-        if time_window == today_sched['am']['today']:
-            msg_list = msgs.am_reminders
-        elif time_window == today_sched['am']['today']:
-            msg_list = msgs.lunch_reminders
-        elif time_window == today_sched['am']['today']:
-            msg_list = msgs.pm_reminders
-        elif time_window == today_sched['am']['today']:
-            msg_list = msgs.eod_reminders
+    if time_window == today_sched['am']['today']:
+        msg_list = msgs.am_reminders
+    elif time_window == today_sched['am']['today']:
+        msg_list = msgs.lunch_reminders
+    elif time_window == today_sched['am']['today']:
+        msg_list = msgs.pm_reminders
+    elif time_window == today_sched['am']['today']:
+        msg_list = msgs.eod_reminders
 
-        return msg_list
+    return msg_list
 
 def send_text(time_window):
     """Send text reminding me to be a human"""
