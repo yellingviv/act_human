@@ -16,42 +16,45 @@ test_token = os.getenv('TOKEN_TEST')
 test_send = os.getenv('TW_TEST')
 
 client = Client(test_sid, test_token)
-current_time = time.localtime()
+current_time = localtime()
 
-today_sched = sched.get_daily_sched()
-
-def check_time(current_time):
-    """check the time to determine which set of messages to draw from"""
+while True:
+    """loop to keep generating a new daily schedule"""
 
     if current_time.tm_wday < 5:
-        """check if it's a weekday"""
-        if current_time.tm_hour == today_sched['am']['today'].tm_hour
-        and current_time.tm_min == today_sched['am']['today'].tm_min:
+        """check that it's a weekday"""
+        today_sched = sched.get_daily_sched()
+        for event in today_sched:
+            while time.strftime("%H:%M", current_time) < today_sched[event]['today']:
+                sleep(today_sched[event]['today'] - time.strftime("%H:%M", current_time))
+            send_text(time.strftime("%H:%M", current_time))
+
+
+def check_time(time_window):
+    """check to determine which set of messages to draw from"""
+
+        if time_window == today_sched['am']['today']:
             msg_list = msgs.am_reminders
-        elif current_time.tm_hour == today_sched['lunch']['today'].tm_hour
-        and current_time.tm_min == today_sched['lunch']['today'].tm_min:
+        elif time_window == today_sched['am']['today']:
             msg_list = msgs.lunch_reminders
-        elif current_time.tm_hour == today_sched['pm']['today'].tm_hour
-        and current_time.tm_min == today_sched['pm']['today'].tm_min:
+        elif time_window == today_sched['am']['today']:
             msg_list = msgs.pm_reminders
-        elif current_time.tm_hour == today_sched['eod']['today'].tm_hour
-        and current_time.tm_min == today_sched['eod']['today'].tm_min:
+        elif time_window == today_sched['am']['today']:
             msg_list = msgs.eod_reminders
 
-body_text = choice(msg_list)
+        return msg_list
 
-message = client.messages.create(
-    to=to,
-    from_=test_send,
-    body=body_text)
+def send_text(time_window):
+    """Send text reminding me to be a human"""
 
-print(message.sid)
-print(message.body)
-print(message.error_message)
+    msg_list = check_time(time_window)
+    body_text = choice(msg_list)
 
+    message = client.messages.create(
+        to=to,
+        from_=test_send,
+        body=body_text)
 
-# time.localtime() returns:
-# year, month, day of the month - month day
-# tm_wday is 0-6, monday is 0 (saturday = 5, sunday = 6) - week day
-# yday is year day
-# hours, minutes, second - hour is 0-23
+    print(message.sid)
+    print(message.body)
+    print(message.error_message)
