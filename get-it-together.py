@@ -77,6 +77,8 @@ while True:
         """check that it's a weekday"""
         today_sched = sched.get_daily_sched()
         for event in today_sched:
+            if time.strftime("%H:%M", current_time) > today_sched[event]['today']:
+                break
             """for each event, check if time to run. if not, sleep until go time"""
             while time.strftime("%H:%M", current_time) < today_sched[event]['today']:
                 sleeptime = get_sleep_time(time.strftime("%H:%M", current_time), today_sched[event]['today'])
