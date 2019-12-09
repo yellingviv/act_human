@@ -73,14 +73,16 @@ def send_text(time_window):
 while True:
     """loop to keep generating a new daily schedule"""
 
+    today_sched = sched.get_daily_sched()
+    print(today_sched)
     if current_time.tm_wday < 5:
         """check that it's a weekday"""
-        today_sched = sched.get_daily_sched()
         for event in today_sched:
-            if time.strftime("%H:%M", current_time) > today_sched[event]['today']:
-                break
             """for each event, check if time to run. if not, sleep until go time"""
             while time.strftime("%H:%M", current_time) < today_sched[event]['today']:
                 sleeptime = get_sleep_time(time.strftime("%H:%M", current_time), today_sched[event]['today'])
                 time.sleep(sleeptime)
-            send_text(time.strftime("%H:%M", current_time))
+            if time.strftime("%H:%M", current_time) > today_sched[event]['today']:
+                continue
+            else:
+                send_text(time.strftime("%H:%M", current_time))
