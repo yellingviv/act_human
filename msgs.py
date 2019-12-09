@@ -3,8 +3,23 @@ am_reminders = ['Please drink some water, not just coffee!',
                 'Unclench your jaw.',
                 'Stop slouching!',
                 ]
-lunch_reminders = []
-pm_reminders = []
+lunch_reminders = ['Don\'t forget to eat lunch!',
+                'Food is friend, not... food?',
+                'Why are you still at your desk? GET LUNCH.',
+                'You are stupid when you\'re hungry.',
+                'That\'s your stomach, not Howard St noise.',
+                'What if... lunchtime?',
+                'Nutrition++']
+pm_reminders = ['Roll your shoulders!',
+                'Do some neck rolls and a few deep breaths.',
+                'How\'s that back feeling? Do something about it!',
+                'Stand up and stretch for a hot second, you catastrophe.',
+                'Unclench your jaw. No, seriously, all the way.',
+                'Drop your shoulders, stop hunching into them!',
+                'You are not yet 80, so straighten your damn back.',
+                'Have you had any water recently? Get some fucking water.',
+                'You\'re a mess. Please stop.',
+                'Fix your shoulders and neck!']
 eod_reminders = ['Time to leave!',
                 'Put your computer away!',
                 'Go home to your family, girl.',
