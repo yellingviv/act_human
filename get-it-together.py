@@ -4,6 +4,7 @@ import os
 from time import localtime
 from random import choice
 import msgs
+import sched
 
 load_dotenv()
 # account_sid = os.getenv('SID')
@@ -17,41 +18,36 @@ test_send = os.getenv('TW_TEST')
 client = Client(test_sid, test_token)
 current_time = time.localtime()
 
-def get_daily_sched():
-    sched = {'am': '', 'pm': '', 'eod': '', 'lunch': ''}
+today_sched = sched.get_daily_sched()
 
 def check_time(current_time):
-    """check the time to determine which set of messages to draw from
-    morning messages: between 10 and noon
-    lunch messages: between 12:20 and 1
-    afternoon messages: between 2:30 and 4:30
-    go home messages: after 5:30"""
+    """check the time to determine which set of messages to draw from"""
 
     if current_time.tm_wday < 5:
-        if current_time.tm_hour > 10 and current_time.tm_hour < 12:
+        """check if it's a weekday"""
+        if current_time.tm_hour == today_sched['am']['today'].tm_hour
+        and current_time.tm_min == today_sched['am']['today'].tm_min:
             msg_list = msgs.am_reminders
-        elif current_time.tm_hour > 12 and current_time.tm_min > 20
-        and current_time.tm_hour < 13:
+        elif current_time.tm_hour == today_sched['lunch']['today'].tm_hour
+        and current_time.tm_min == today_sched['lunch']['today'].tm_min:
             msg_list = msgs.lunch_reminders
-        elif current_time.tm_hour > 14 and current_time.tm_min > 30
-        and current_time.tm_hour < 16 and current_time.tm_min < 30:
+        elif current_time.tm_hour == today_sched['pm']['today'].tm_hour
+        and current_time.tm_min == today_sched['pm']['today'].tm_min:
             msg_list = msgs.pm_reminders
-        elif current_time.tm_hour > 17 and current_time.tm_min > 30:
+        elif current_time.tm_hour == today_sched['eod']['today'].tm_hour
+        and current_time.tm_min == today_sched['eod']['today'].tm_min:
             msg_list = msgs.eod_reminders
-        else:
-            return False
 
-if msg_list:
-    body_text = choice(msg_list)
+body_text = choice(msg_list)
 
-    message = client.messages.create(
-        to=to,
-        from_=test_send,
-        body=body_text)
+message = client.messages.create(
+    to=to,
+    from_=test_send,
+    body=body_text)
 
-    print(message.sid)
-    print(message.body)
-    print(message.error_message)
+print(message.sid)
+print(message.body)
+print(message.error_message)
 
 
 # time.localtime() returns:
@@ -59,7 +55,3 @@ if msg_list:
 # tm_wday is 0-6, monday is 0 (saturday = 5, sunday = 6) - week day
 # yday is year day
 # hours, minutes, second - hour is 0-23
-
-
-the_schedule = [ get_epochtime(radar.random_datetime(start=window_start, stop=window_end))
-for t in range(randint(runs_per_day[0], runs_per_day[1])) ]
