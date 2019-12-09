@@ -40,13 +40,14 @@ def check_time(time_window):
     """check to determine which set of messages to draw from"""
 
     msg_list = []
-    if time_window == today_sched['am']['today']:
+    window = time_window
+    if window == today_sched['am']['today']:
         msg_list = msgs.am_reminders
-    elif time_window == today_sched['am']['today']:
+    elif window == today_sched['am']['today']:
         msg_list = msgs.lunch_reminders
-    elif time_window == today_sched['am']['today']:
+    elif window == today_sched['am']['today']:
         msg_list = msgs.pm_reminders
-    elif time_window == today_sched['am']['today']:
+    elif window == today_sched['am']['today']:
         msg_list = msgs.eod_reminders
 
     return msg_list
@@ -55,7 +56,8 @@ def check_time(time_window):
 def send_text(time_window):
     """Send text reminding me to be a human"""
 
-    msg_list = check_time(time_window)
+    window = time_window
+    msg_list = check_time(window)
     body_text = choice(msg_list)
 
     message = client.messages.create(
