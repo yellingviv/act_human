@@ -18,19 +18,6 @@ test_send = os.getenv('TW_TEST')
 client = Client(test_sid, test_token)
 current_time = time.localtime()
 
-while True:
-    """loop to keep generating a new daily schedule"""
-
-    if current_time.tm_wday < 5:
-        """check that it's a weekday"""
-        today_sched = sched.get_daily_sched()
-        for event in today_sched:
-            """for each event, check if time to run. if not, sleep until go time"""
-            while time.strftime("%H:%M", current_time) < today_sched[event]['today']:
-                sleeptime = get_sleep_time(time.strftime("%H:%M", current_time), today_sched[event]['today'])
-                time.sleep(sleeptime)
-            send_text(time.strftime("%H:%M", current_time))
-
 
 def get_sleep_time(actual_time, event_time):
     """calculate the amount of time between now and a given event, in seconds"""
@@ -52,6 +39,7 @@ def get_sleep_time(actual_time, event_time):
 def check_time(time_window):
     """check to determine which set of messages to draw from"""
 
+    msg_list = []
     if time_window == today_sched['am']['today']:
         msg_list = msgs.am_reminders
     elif time_window == today_sched['am']['today']:
@@ -62,6 +50,7 @@ def check_time(time_window):
         msg_list = msgs.eod_reminders
 
     return msg_list
+
 
 def send_text(time_window):
     """Send text reminding me to be a human"""
@@ -77,3 +66,17 @@ def send_text(time_window):
     print(message.sid)
     print(message.body)
     print(message.error_message)
+
+
+while True:
+    """loop to keep generating a new daily schedule"""
+
+    if current_time.tm_wday < 5:
+        """check that it's a weekday"""
+        today_sched = sched.get_daily_sched()
+        for event in today_sched:
+            """for each event, check if time to run. if not, sleep until go time"""
+            while time.strftime("%H:%M", current_time) < today_sched[event]['today']:
+                sleeptime = get_sleep_time(time.strftime("%H:%M", current_time), today_sched[event]['today'])
+                time.sleep(sleeptime)
+            send_text(time.strftime("%H:%M", current_time))
