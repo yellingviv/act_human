@@ -1,7 +1,7 @@
 from twilio.rest import Client
 from dotenv import load_dotenv
 import os
-from time import localtime
+import time
 from random import choice
 import msgs
 import sched
@@ -16,7 +16,7 @@ test_token = os.getenv('TOKEN_TEST')
 test_send = os.getenv('TW_TEST')
 
 client = Client(test_sid, test_token)
-current_time = localtime()
+current_time = time.localtime()
 
 while True:
     """loop to keep generating a new daily schedule"""
@@ -25,9 +25,28 @@ while True:
         """check that it's a weekday"""
         today_sched = sched.get_daily_sched()
         for event in today_sched:
+            """for each event, check if time to run. if not, sleep until go time"""
             while time.strftime("%H:%M", current_time) < today_sched[event]['today']:
-                sleep(today_sched[event]['today'] - time.strftime("%H:%M", current_time))
+                sleeptime = get_sleep_time(time.strftime("%H:%M", current_time), today_sched[event]['today'])
+                time.sleep(sleeptime)
             send_text(time.strftime("%H:%M", current_time))
+
+
+def get_sleep_time(actual_time, event_time):
+    """calculate the amount of time between now and a given event, in seconds"""
+
+    actual = actual_time.split(':')
+    now_hour = int(actual[0])
+    now_min = int(actual[1])
+    now_in_seconds = ((now_hour * 60) * 60) + (now_min * 60)
+    event = event_time.split(':')
+    event_hour = int(event[0])
+    event_min = int(event[1])
+    event_in_seconds = ((event_hour * 60) * 60) + (event_min * 60)
+
+    time_difference = event_in_seconds - now_in_seconds
+
+    return time_difference
 
 
 def check_time(time_window):
