@@ -5,6 +5,7 @@ sched = {'am': {'lower': 10, 'upper': 11, 'today': ''},
         'pm': {'lower': 14, 'upper': 17, 'today': ''},
         'eod': {'lower': 17, 'upper': 18, 'today': ''},
         'lunch': {'lower': 12, 'upper': 12, 'today': ''}}
+
 sched_list = []
 
 def get_daily_sched():

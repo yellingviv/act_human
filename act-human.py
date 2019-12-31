@@ -16,8 +16,6 @@ test_token = os.getenv('TOKEN_TEST')
 test_send = os.getenv('TW_TEST')
 
 client = Client(test_sid, test_token)
-current_time = time.localtime()
-
 
 def get_sleep_time(actual_time, event_time):
     """calculate the amount of time between now and a given event, in seconds"""
@@ -75,14 +73,27 @@ while True:
 
     today_sched = sched.get_daily_sched()
     print(today_sched)
+    current_time = time.localtime()
+    text_count = 0
     if current_time.tm_wday < 5:
         """check that it's a weekday"""
         for event in today_sched:
+            print('start of a new for loop iteration')
             """for each event, check if time to run. if not, sleep until go time"""
             while time.strftime("%H:%M", current_time) < today_sched[event]['today']:
                 sleeptime = get_sleep_time(time.strftime("%H:%M", current_time), today_sched[event]['today'])
+                print(sleeptime)
                 time.sleep(sleeptime)
+
             if time.strftime("%H:%M", current_time) > today_sched[event]['today']:
+                print('jump to next event')
+                text_count += 1
                 continue
             else:
                 send_text(time.strftime("%H:%M", current_time))
+                text_count += 1
+
+            if text_count == 5 and time.strftime("%H:%M", current_time) < '11:59':
+                sleeptime = get_sleep_time(time.strftime("%H:%M", current_time), '11:59')
+                print(sleeptime)
+                time.sleep(sleeptime)
